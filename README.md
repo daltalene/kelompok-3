@@ -9,36 +9,34 @@
 | Arkan Abdurrahman | 125103038 | Peran D - Data dan Dashboard (Tahap 4) |
 
 ## Arsitektur
-```mermaid
-flowchart LR
-    subgraph Node["Node Sensor"]
-        ESP["ESP32 + DHT22<br/>(Interval 10 dtk)"]
-    end
+# Kelompok 3 - Pemantau Suhu dan Kelembapan
 
-    subgraph RPI["Raspberry Pi (rpi-kel3)"]
-        MQTT["Mosquitto Broker<br/>(Port 1883)"]
-        TEL["Telegraf<br/>(Topic: iot/kel3/dht22)"]
-        INF["InfluxDB 2.x<br/>(Port 8086 | Bucket: iot)"]
-        GRAF["Grafana<br/>(Port 3000)"]
-    end
+## Anggota dan peran
+| Nama | NIM | Peran |
+| :--- | :--- | :--- |
+| Arkan Abdurrahman | 125103038 | Peran A - Network dan RPI (Tahap 1 / Koordinator) |
+| Adzkia Zafira Sahlah | 125103049 | Peran B - Sensor dan Firmware (Tahap 2) |
+| Clarissa Daltalena Vaniswa | 125103037 | Peran C - Platform dan Akses Internet (Tahap 3a & 3b) |
+| Jhon Calvin Titirloloby | 125103086 | Peran D - Data dan Dashboard (Tahap 4) |
 
-    subgraph Publik["Akses Publik"]
-        TUN["ngrok Tunnel<br/>(HTTPS)"]
-        USR["Browser Publik<br/>(Wajib Login)"]
-    end
+## Arsitektur
+```text
+┌───────────────────┐     WiFi 2,4 GHz      ┌───────────────────────────────────────────────────────────────┐
+│   ESP32 + DHT22   │ ────────────────────> │                  Raspberry Pi (rpi-kel3)                    │
+│ (Interval 10 dtk) │      MQTT :1883       │                                                               │
+└───────────────────┘                       │  ┌───────────┐   ┌──────────┐   ┌────────────┐   ┌─────────┐  │
+                                            │  │ Mosquitto │──>│ Telegraf │──>│ InfluxDB 2 │──>│ Grafana │  │
+                                            │  │  (:1883)  │   │  (MQTT)  │   │  (:8086)   │   │ (:3000) │  │
+                                            │  └───────────┘   └──────────┘   └────────────┘   └────┬────┘  │
+                                            └───────────────────────────────────────────────────────┼───────┘
+                                                                                                    │
+┌───────────────────┐     HTTPS (Publik)    ┌──────────────────┐          Localhost :3000           │
+│  Browser Publik   │ <──────────────────── │   ngrok Tunnel   │ <──────────────────────────────────┘
+│   (Wajib Login)   │                       │ (Layanan systemd)│
+└───────────────────┘                       └──────────────────┘
 
-    subgraph Mgmt["Jalur Manajemen Terpisah"]
-        MHS["Mahasiswa"] <--> PIC["Raspberry Pi Connect<br/>(Terminal & Desktop)"]
-    end
-
-    ESP -- "WiFi 2,4 GHz / MQTT" --> MQTT
-    MQTT -- "Subscribe" --> TEL
-    TEL -- "Write" --> INF
-    INF -- "Flux Query" --> GRAF
-    GRAF -- "Localhost:3000" --> TUN
-    TUN -- "HTTPS" --> USR
-    PIC -. "Kontrol Sistem" .-> RPI
-    ```
+*Jalur Manajemen Terpisah (Bukan Jalur Data):
+[Mahasiswa] <══════> [Raspberry Pi Connect] <══════> [Terminal & Desktop rpi-kel3]
 
 Sensor DHT22 pada mikrokontroler ESP32 membaca suhu dan kelembapan udara setiap 10 detik, lalu mengirimkannya dalam format JSON melalui protokol MQTT (port 1883) ke broker Eclipse Mosquitto di Raspberry Pi (`rpi-kel3`). Layanan Telegraf mengambil pesan dari topik `iot/kel3/dht22` dan menyimpannya ke dalam bucket `iot` pada basis data InfluxDB 2.x (port 8086 lokal). Grafana (port 3000) menarik data dari InfluxDB menggunakan bahasa query Flux untuk menampilkan grafik Time Series, indikator Gauge (`°C` dan `%`), serta mengevaluasi aturan peringatan suhu tinggi (`> 30°C`), dan menjadi satu-satunya layanan yang dibuka ke Internet publik melalui layanan tunnel terenkripsi ngrok, sedangkan akses terminal dan desktop RPI oleh mahasiswa dikelola secara terpisah melalui Raspberry Pi Connect.
 
