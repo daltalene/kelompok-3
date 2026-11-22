@@ -1,0 +1,13 @@
+[Unit]
+Description=ngrok Tunnel Permanen untuk Grafana Port 3000
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=team_3
+ExecStart=/usr/local/bin/ngrok http --domain=headcount-engaged-pushup.ngrok-free.dev 3000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
