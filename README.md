@@ -38,7 +38,7 @@ flowchart LR
     GRAF -- "Localhost:3000" --> TUN
     TUN -- "HTTPS" --> USR
     PIC -. "Kontrol Sistem" .-> RPI
-    ```Sensor DHT22 pada mikrokontroler...
+    ```
 
 Sensor DHT22 pada mikrokontroler ESP32 membaca suhu dan kelembapan udara setiap 10 detik, lalu mengirimkannya dalam format JSON melalui protokol MQTT (port 1883) ke broker Eclipse Mosquitto di Raspberry Pi (`rpi-kel3`). Layanan Telegraf mengambil pesan dari topik `iot/kel3/dht22` dan menyimpannya ke dalam bucket `iot` pada basis data InfluxDB 2.x (port 8086 lokal). Grafana (port 3000) menarik data dari InfluxDB menggunakan bahasa query Flux untuk menampilkan grafik Time Series, indikator Gauge (`°C` dan `%`), serta mengevaluasi aturan peringatan suhu tinggi (`> 30°C`), dan menjadi satu-satunya layanan yang dibuka ke Internet publik melalui layanan tunnel terenkripsi ngrok, sedangkan akses terminal dan desktop RPI oleh mahasiswa dikelola secara terpisah melalui Raspberry Pi Connect.
 
