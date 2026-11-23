@@ -53,7 +53,6 @@ Sensor DHT22 pada mikrokontroler ESP32 membaca suhu dan kelembapan udara setiap 
 | Aturan alert suhu langsung memicu status peringatan palsu pada suhu ruang normal | Query alert masih menyertakan *field* `kelembapan` (~50%) sehingga langsung melewati ambang batas `> 30` | Menghapus filter `kelembapan` pada query alert sehingga evaluasi `IS ABOVE 30` hanya untuk *field* `suhu` |
 
 ## Cara menjalankan ulang
-```bash
 1. **Siapkan sistem operasi Raspberry Pi OS (64-bit), autentikasi SSH, dan aturan firewall UFW:**
    ```bash
    sudo apt update && sudo apt upgrade -y
