@@ -54,17 +54,72 @@ Sensor DHT22 pada mikrokontroler ESP32 membaca suhu dan kelembapan udara setiap 
 
 ## Cara menjalankan ulang
 ```bash
-# 1. Perbarui sistem operasi Raspberry Pi OS 64-bit dan atur hostname unik
-sudo apt update && sudo apt full-upgrade -y
-sudo hostnamectl set-hostname rpi-kel3
+1. **Siapkan sistem operasi Raspberry Pi OS (64-bit), autentikasi SSH, dan aturan firewall UFW:**
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   sudo hostnamectl set-hostname rpi-kel3
+   sudo apt install -y ufw mosquitto mosquitto-clients
 
-# 2. Pasang dan aktifkan firewall UFW serta layanan inti (Mosquitto, InfluxDB, Telegraf, Grafana)
-sudo apt install -y ufw mosquitto mosquitto-clients influxdb2 telegraf grafana
-sudo ufw enable
-sudo systemctl enable --now mosquitto influxdb telegraf grafana-server
+   # Konfigurasi kunci SSH (jalankan ssh-keygen -t ed25519 di klien, lalu daftarkan public key)
+   mkdir -p ~/.ssh && chmod 700 ~/.ssh
+   echo "<ISI_PUBLIC_KEY_ED25519>" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
 
-# 3. Verifikasi aliran pesan MQTT lokal terautentikasi dari ESP32
-mosquitto_sub -h localhost -t "iot/kel3/#" -v
+   # Aktivasi aturan firewall UFW
+   sudo ufw allow 22/tcp
+   sudo ufw allow 1883/tcp
+   sudo ufw allow 3000/tcp
+   sudo ufw enable
+   sudo ufw status
+   ```
 
-# 4. Jalankan layanan systemd tunnel ngrok untuk mengekspos port 3000 (Grafana) ke Internet
-sudo systemctl enable --now ngrok-tunnel.service
+2. **Atur kredensial pengguna dan layanan broker Eclipse Mosquitto:**
+   ```bash
+   sudo mosquitto_passwd -c /etc/mosquitto/pwfile esp32
+   sudo cp rpi/mosquitto.conf /etc/mosquitto/conf.d/default.conf
+   sudo systemctl enable --now mosquitto
+   ```
+   
+3. **Tambahkan repositori InfluxData, pasang InfluxDB 2.x, Telegraf, dan Grafana:**
+   ```bash
+   curl -fsSL [https://repos.influxdata.com/influxdata-archive.key](https://repos.influxdata.com/influxdata-archive.key) | gpg --dearmor | sudo tee/etc/apt/trusted.gpg.d/influxdata-archive_compat.gpg > /dev/null
+   sudo apt update && sudo apt install -y influxdb2 telegraf grafana
+   sudo systemctl enable --now influxdb telegraf grafana-server
+   ```
+   
+4. **Inisialisasi basis data InfluxDB, buat token API, dan konfigurasi Telegraf:**
+   ```bash
+   influx setup --username admin --password <ISI_PASSWORD_ADMIN> --org kampus --bucket iot --retention 0 --force
+   TOKEN=$(influx auth create --org kampus --all-access --json | grep -o '"token": *"[^"]*"' | cut -d'"' -f4)
+   sudo bash -c "cat << 'EOF' > /etc/telegraf/telegraf.conf
+   [agent]
+     interval = \"5s\"
+     flush_interval = \"5s\"
+
+   [[outputs.influxdb_v2]]
+     urls = [\"[http://127.0.0.1:8086](http://127.0.0.1:8086)\"]
+     token = \"$TOKEN\"
+     organization = \"kampus\"
+     bucket = \"iot\"
+
+   [[inputs.mqtt_consumer]]
+     servers = [\"tcp://127.0.0.1:1883\"]
+     topics = [\"iot/kel3/dht22\"]
+     username = \"esp32\"
+     password = \"<ISI_PASSWORD_MQTT>\"
+     data_format = \"json\"
+   EOF"
+   sudo systemctl restart telegraf
+   (Setelah layanan aktif, buka http://192.168.10.90:3000 untuk menghubungkan data source InfluxDB (Flux) dan mengimpor dashboard/grafana_kel3.json).
+   ```
+   
+5. **Jalankan layanan ngrok tunnel untuk publikasi akses internet:**
+   ```bash
+   ngrok config add-authtoken <ISI_AUTHTOKEN_NGROK>
+   sudo cp rpi/ngrok-tunnel.service /etc/systemd/system/ngrok.service
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now ngrok.service
+   ```
+   
+6. **Program mikrokontroler ESP32 DevKit untuk membaca sensor DHT22:**
+   * Buka berkas firmware/dht22_mqtt.ino di Arduino IDE (pastikan pustaka DHT sensor library dan PubSubClient sudah terpasang).
+   * Sesuaikan nilai ISI_SSID_WIFI, ISI_PASSWORD_WIFI, serta ISI_PASSWORD_MQTT, pilih papan DOIT ESP32 DEVKIT V1, lalu tekan tombol Upload.
