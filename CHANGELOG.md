@@ -2,40 +2,42 @@
 
 Seluruh riwayat pengembangan, pengujian bertahap, serta perbaikan konfigurasi sistem pemantauan suhu dan kelembapan berbasis ESP32, MQTT, InfluxDB, dan Grafana dicatat dalam dokumen ini.
 
-## [v1.4.0] - 2026-11-22
-### Ditambahkan
-- Mengonfigurasi layanan latar belakang `systemd` (`ngrok-tunnel.service` dengan `Restart=always`) pada `rpi-kel3` agar tunnel HTTPS ke port `3000` (Grafana) berjalan otomatis saat booting dan tidak terputus ketika sesi terminal ditutup.
-- Melakukan pengujian akses dashboard Grafana melalui jaringan data seluler di luar jaringan WiFi kampus (`https://headcount-engaged-pushup.ngrok-free.dev`) dan memverifikasi mekanisme wajib login.
-- Melengkapi dokumentasi repositori (`README.md`, `CHANGELOG.md`, `kontribusi.md`, serta arsip bukti pengujian di direktori `docs/`).
+## Peran B - 23 November 2026 — Penyelesaian Akhir & Sinkronisasi Repositori
+* **Penyelarasan Firmware (`firmware/dht22_mqtt.ino`):** Menyeragamkan interval pembacaan sensor DHT22 (`GPIO4`) menjadi 10 detik (`10000 ms`) serta memperbarui identitas klien menjadi `ESP32_Kel3_Client` pada topik `iot/kel3/dht22`.
+* **Pembaruan Bukti Pengujian (`docs/`):** Memperbarui arsip tangkapan layar verifikasi lalu lintas broker MQTT (`mosquitto_sub -h localhost -t "iot/kel3/#" -v`) dan kelengkapan bukti pengujian setiap tahap.
+* **Sterilisasi Kredensial:** Mengganti seluruh informasi sensitif (SSID/kata sandi WiFi, kredensial MQTT, dan token API InfluxDB) dengan variabel pengganti (`ISI_SSID_WIFI`, `ISI_PASSWORD_WIFI`, `ISI_PASSWORD_MQTT`, `ISI_TOKEN_INFLUXDB`) sebelum publikasi repositori.
+* **Kelengkapan Dokumen:** Merampungkan panduan instalasi pada `README.md`, catatan pembagian kerja di `KONTRIBUSI.md`, serta ekspor konfigurasi dashboard pada `dashboard/grafana_kel3.json`.
 
-## [v1.3.0] - 2026-11-17
-### Ditambahkan
-- Membuat bucket `iot` pada InfluxDB 2.x (port `8086` lokal) dan memverifikasi persistensi data pasca-*reboot* perangkat Raspberry Pi.
-- Membangun dashboard Grafana (port `3000`) menggunakan bahasa query Flux untuk panel grafik *Time Series* dan indikator *Gauge* satuan `°C` dan `%`.
-- Menambahkan aturan peringatan (*alert rule*) suhu tinggi dengan kondisi `IS ABOVE 30`.
+---
 
-### Diperbaiki
-- **Query Flux Grafik & Gauge:** Menambahkan fungsi `|> keep(columns: ["_time", "_value", "_field"])` untuk menghapus metadata tag bawaan (`host`, `topic`) sehingga teks legenda tidak lagi menabrak angka visual.
-- **Filter Query Alert:** Menghapus *field* `kelembapan` dari query evaluasi alert agar peringatan suhu tinggi (`> 30°C`) tidak terpicu secara palsu oleh nilai kelembapan ruang normal (~50%).
+## Peran C - 22 November 2026 — Konfigurasi Akses Publik via ngrok
+* **Layanan Tunnel Otomatis (`rpi/ngrok-tunnel.service`):** Menambahkan unit layanan *systemd* (`Restart=always`) pada `rpi-kel3` untuk menjalankan tunnel HTTPS **ngrok** dengan domain statis `headcount-engaged-pushup.ngrok-free.dev` yang mengarah ke antarmuka Grafana (`localhost:3000`).
+* **Uji Akses Jaringan Eksternal:** Memverifikasi kelancaran akses dashboard dari luar jaringan lokal kampus menggunakan koneksi data seluler dan memastikan halaman autentikasi login tetap aktif.
 
-## [v1.2.0] - 2026-11-15
-### Ditambahkan
-- Menginstal dan mengonfigurasi broker Eclipse Mosquitto (`listener 1883`) pada `rpi-kel3`.
-- Menerapkan autentikasi kredensial pengguna (`allow_anonymous false`) menggunakan `mosquitto_passwd` untuk mengamankan komunikasi pesan lokal.
-- Mengonfigurasi layanan Telegraf (`/etc/telegraf/telegraf.conf`) untuk berlangganan (*subscribe*) ke topik `iot/kel3/dht22` dan menulis payload JSON ke bucket `iot` InfluxDB.
+---
 
-### Diperbaiki
-- Menyelaraskan penamaan topik (`iot/kel3/dht22`) dan nama *field* JSON (`suhu` dan `kelembapan`) antara firmware ESP32, Telegraf, dan query Flux Grafana untuk mengatasi status *No data*.
+## Peran D - 20 November 2026 — Basis Data InfluxDB & Dashboard Grafana
+* **Penyimpanan Time-Series:** Menyiapkan organisasi `kampus` dan *bucket* `iot` pada **InfluxDB 2.x** (`port 8086`) untuk menampung data historis suhu dan kelembapan secara persisten.
+* **Visualisasi & Alerting:** Merancang panel grafik *Time Series* dan indikator *Gauge* pada dashboard **Grafana** (`monitoring IoT kelompok 3`) menggunakan bahasa kueri Flux, sekaligus menambahkan aturan peringatan (*alert*) apabila suhu ruangan melebihi `30°C`.
+* **Optimalisasi Kueri:** Menyaring kolom keluaran kueri Flux (`keep(columns: ["_time", "_value", "_field"])`) agar legenda grafik tampil bersih serta memisahkan evaluasi *field* suhu dari kelembapan pada aturan peringatan.
 
-## [v1.1.0] - 2026-11-14
-### Ditambahkan
-- Merakit rangkaian sensor suhu dan kelembapan DHT22 pada mikrokontroler ESP32 (pin data GPIO 4).
-- Mengunggah firmware pembacaan sensor dan pengiriman payload JSON via MQTT setiap 10 detik melalui jaringan WiFi lokal `2,4 GHz`.
+---
 
-### Diperbaiki
-- Menyesuaikan interval pembacaan menjadi 10 detik (`10000 ms`) serta menstabilkan koneksi pin GPIO 4 untuk menghilangkan error pembacaan nilai kosong (`nan`).
+## Peran C - 18 November 2026 — Layanan Broker MQTT & Agen Telegraf
+* **Broker Pesan Lokal (`rpi/mosquitto.conf`):** Mengaktifkan layanan **Eclipse Mosquitto** pada port `1883` dengan akun klien `esp32` untuk menerima transmisi data dari mikrokontroler.
+* **Penghubung Data (`rpi/telegraf.conf`):** Mengonfigurasi agen **Telegraf** untuk berlangganan topik `iot/kel3/dht22`, memproses muatan berformat JSON (`suhu` dan `kelembapan`), serta menuliskannya ke InfluxDB.
 
-## [v1.0.0] - 2026-11-12
+---
+
+## Peran B - 12 November 2026 — Perakitan Sensor DHT22 & Firmware ESP32
+* **Integrasi Perangkat Keras:** Menghubungkan modul sensor **DHT22** ke papan **ESP32 DevKit** (`VCC` ke `3V3`, `DATA` ke `D4`/`GPIO4`, `GND` ke `GND`).
+* **Pemrograman Mikrokontroler:** Mengunggah sketsa program ke ESP32 untuk koneksi jaringan WiFi lokal `2,4 GHz`, indikator LED internal (`GPIO2`) sebagai penanda status koneksi, serta pengiriman paket data JSON secara berkala.
+
+---
+
+## Peran A - 11 November 2026 — Inisialisasi Server Raspberry Pi & Keamanan Jaringan
+* **Persiapan Sistem Operasi:** Menginstal **Raspberry Pi OS (64-bit)** dengan *hostname* `rpi-kel3` dan akun `team_3` pada alamat IP lokal `192.168.10.90`.
+* **Kendali Jarak Jauh & Firewall:** Mengaktifkan **Raspberry Pi Connect** untuk manajemen server secara *headless* serta menerapkan aturan penyaringan lalu lintas jaringan menggunakan **UFW** pada segmen `192.168.10.0/24`.
 ### Ditambahkan
 - Melakukan instalasi sistem operasi Raspberry Pi OS 64-bit dan menetapkan hostname unik `rpi-kel3`.
 - Mengaktifkan firewall UFW (`ufw enable`) untuk membatasi akses port jaringan lokal.
