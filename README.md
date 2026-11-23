@@ -75,7 +75,7 @@ sudo ufw enable
 sudo systemctl enable --now mosquitto influxdb telegraf grafana-server
 
 # 3. Verifikasi aliran pesan MQTT lokal terautentikasi dari ESP32
-mosquitto_sub -h localhost -p 1883 -u <mqtt_user> -P <mqtt_password> -t 'iot/kel3/dht22' -v
+mosquitto_sub -h localhost -t "iot/kel3/#" -v
 
 # 4. Jalankan layanan systemd tunnel ngrok untuk mengekspos port 3000 (Grafana) ke Internet
 sudo systemctl enable --now ngrok-tunnel.service
