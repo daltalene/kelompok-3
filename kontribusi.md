@@ -1,36 +1,41 @@
-# Kontribusi Anggota - Kelompok 3
+# Catatan Pembagian Tugas & Kontribusi Tim — Kelompok 3
 
-Dokumen ini merinci pembagian tugas dan kontribusi teknis setiap anggota dalam pengerjaan proyek sistem pemantauan suhu dan kelembapan berbasis IoT.
-
-## Ringkasan Peran
-| Nama | NIM | Peran | Fokus Tahap |
-| :--- | :--- | :--- | :--- |
-| Adzkia Zafira Sahlah | 125103049 | Peran A - Network dan RPI (Koordinator) | Tahap 1 |
-| Clarissa Daltalena Vaniswa | 125103037 | Peran B - Sensor dan Firmware | Tahap 2 |
-| Jhon Calvin Titirloloby | 125103086 | Peran C - Platform dan Akses Internet | Tahap 3a & 3b |
-| Arkan Abdurrahman | 125103038 |Peran D - Data dan Dashboard | Tahap 4 |
+Berkas ini mendokumentasikan pembagian fokus pekerjaan, ruang lingkup konfigurasi teknis, serta tanggung jawab pengelolaan repositori GitHub bagi setiap anggota **Kelompok 3** dalam pengembangan sistem pemantauan suhu dan kelembapan berbasis IoT.
 
 ---
 
-## Rincian Kontribusi per Anggota
+## Matriks Tanggung Jawab Anggota
 
-### 1. Adzkia Zafira Sahlah (125103049) — Peran A: Network dan RPI (Koordinator)
-* **Persiapan Sistem & Jaringan RPI:** Melakukan instalasi Raspberry Pi OS 64-bit, konfigurasi hostname `rpi-kel3`, pembaruan paket sistem, serta verifikasi konektivitas jaringan lokal dan Internet.
-* **Keamanan Firewall:** Mengaktifkan dan mengatur kebijakan firewall UFW (`ufw status`) pada Raspberry Pi.
-* **Manajemen Akses Jarak Jauh:** Mengonfigurasi Raspberry Pi Connect sebagai jalur manajemen terminal/desktop untuk mengatasi kendala *Client / AP Isolation* pada jaringan WiFi kampus.
-* **Koordinasi Proyek:** Mengoordinasikan integrasi antartahap dan pengumpulan dokumentasi bukti uji (`docs/tahap1_rpi_piconnect.png`).
+| Nama | NIM | Peran | Fokus Tahap | Artefak & Direktori yang Dikelola |
+| :--- | :--- | :--- | :--- | :--- |
+| Adzkia Zafira Sahlah | 125103049 | Peran A | Infrastruktur Server & Keamanan Jaringan | `docs/tahap1_piconnect_ufw.png`, `KONTRIBUSI.md` |
+| Clarissa Daltalena Vaniswa | 125103037 | Peran B | Perakitan Perangkat Keras & Pemrograman ESP32 | `firmware/dht22_mqtt.ino`, `docs/tahap2_rangkaian_serial.png` |
+| Jhon Calvin Titirloloby | 125103086 | Peran C | Layanan Broker MQTT, Agen Data & Tunnel Publik | `rpi/mosquitto.conf`, `rpi/telegraf.conf`, `rpi/ngrok-tunnel.service`, `docs/tahap3a_mosquitto_sub.png`, `docs/tahap3b_akses_publik.png` |
+| Arkan Abdurrahman | 125103038 | Peran D | Penyimpanan Time-Series, Visualisasi & Dokumentasi | `dashboard/grafana_kel3.json`, `docs/tahap4_grafana_dashboard.png`, `README.md`, `CHANGELOG.md` |
 
-### 2. Clarissa Daltalena Vaniswa (125103037) — Peran B: Sensor dan Firmware
-* **Perakitan Perangkat Keras:** Merancang dan merakit rangkaian mikrokontroler ESP32 dengan sensor DHT22 pada pin GPIO 4.
-* **Pengembangan Firmware:** Menulis kode program Arduino untuk koneksi WiFi `2,4 GHz`, pembacaan sensor suhu dan kelembapan setiap 10 detik, serta pemformatan payload JSON (`suhu` dan `kelembapan`).
-* **Kalibrasi & Validasi Sensor:** Mengatasi kendala pembacaan nilai `nan` dan memverifikasi kestabilan pengiriman data melalui Serial Monitor (`docs/tahap2_rangkaian_serial.png`).
+---
 
-### 3. Jhon Calvin Titirloloby (125103086) — Peran C: Platform dan Akses Internet
-* **Konfigurasi Broker MQTT:** Menginstal Eclipse Mosquitto pada `rpi-kel3`, mengatur `listener 1883`, menonaktifkan akses anonim, serta mengelola kredensial autentikasi klien ESP32 (`docs/tahap3a_mosquitto_sub.png`).
-* **Konfigurasi Tunnel Publik:** Menyiapkan domain statis ngrok dan membuat layanan permanen `systemd` (`ngrok-tunnel.service`) agar port `3000` Grafana dapat diakses secara aman melalui HTTPS.
-* **Pengujian Akses Luar Kampus:** Melakukan pengujian akses publik dashboard Grafana menggunakan jaringan data seluler dan memverifikasi proteksi login (`docs/tahap3b_akses_seluler.png`), serta menyusun dokumentasi repositori GitHub.
+## Detail Realisasi Pekerjaan
 
-### 4. Arkan Abdurrahman (125103038) — Peran D: Data dan Dashboard
-* **Konfigurasi Pipeline Data:** Mengonfigurasi InfluxDB 2.x (pembuatan organisasi, bucket `iot`, dan token akses) serta menyelaraskan konfigurasi Telegraf pada topik `iot/kel3/dht22`.
-* **Perancangan Visualisasi Grafana:** Membangun panel grafik *Time Series* dan indikator *Gauge* (`°C` dan `%`) menggunakan bahasa query Flux, serta merapikan tampilan legenda dengan fungsi `keep()`.
-* **Konfigurasi Alert & Uji Persistensi:** Menyusun aturan peringatan suhu tinggi (`> 30°C`), memperbaiki filter query alert agar akurat hanya pada *field* `suhu`, serta memverifikasi ketahanan data InfluxDB pasca-*reboot* (`docs/tahap4_grafana_dashboard.png`).
+### 1. Peran A — Adzkia Zafira Sahlah (Infrastruktur Server & Keamanan Jaringan)
+- Menyiapkan sistem operasi **Raspberry Pi OS (64-bit)** sebagai server lokal dengan identitas *hostname* `rpi-kel3` dan user `team_3` pada alamat IP `192.168.10.90`.
+- Mengaktifkan akses kendali jarak jauh melalui **Raspberry Pi Connect** guna mempermudah pemeliharaan perangkat di laboratorium tanpa monitor eksternal.
+- Menerapkan penyaringan lalu lintas jaringan menggunakan **UFW (*Uncomplicated Firewall*)** agar komunikasi layanan hanya terbuka pada segmen jaringan lokal (`192.168.10.0/24`).
+- Mendokumentasikan hasil aktivasi akses jarak jauh dan aturan *firewall* ke dalam `docs/tahap1_piconnect_ufw.png` serta menyusun catatan kontribusi tim.
+
+### 2. Peran B — Clarissa Daltalena Vaniswa (Perakitan Perangkat Keras & Pemrograman ESP32)
+- Menghubungkan modul sensor **DHT22** pada papan mikrokontroler **ESP32 DevKit** menggunakan jalur daya `3V3`, pin sinyal digital `D4` (`GPIO4`), dan referensi `GND`.
+- Menulis logika program `firmware/dht22_mqtt.ino` yang mengatur siklus pembacaan suhu dan kelembapan setiap 10 detik, menyalakan indikator LED internal (`GPIO2`) saat koneksi stabil, serta mengirimkan data berformat JSON ke topik `iot/kel3/dht22`.
+- Memvalidasi keluaran pembacaan sensor pada *Serial Monitor* (baud rate `115200`) dan menyimpan bukti pengujian perangkat keras pada `docs/tahap2_rangkaian_serial.png`.
+
+### 3. Peran C — Jhon Calvin Titirloloby (Layanan Broker MQTT, Agen Data & Tunnel Publik)
+- Mengelola layanan **Eclipse Mosquitto** melalui berkas `rpi/mosquitto.conf` untuk menangani pertukaran pesan MQTT lokal dengan kredensial klien `esp32`.
+- Menjalankan **Telegraf** (`rpi/telegraf.conf`) sebagai penghubung yang menerjemahkan muatan JSON dari broker MQTT ke dalam basis data InfluxDB.
+- Membuat unit layanan *systemd* permanen (`rpi/ngrok-tunnel.service`) berbasis **ngrok** dengan domain statis `headcount-engaged-pushup.ngrok-free.dev` agar antarmuka Grafana lokal (`port 3000`) dapat diakses dari internet.
+- Mengarsipkan tangkapan layar verifikasi lalu lintas topik MQTT (`docs/tahap3a_mosquitto_sub.png`) dan pengujian akses luar jaringan (`docs/tahap3b_akses_publik.png`).
+
+### 4. Peran D — Arkan Abdurrahman (Penyimpanan Time-Series, Visualisasi & Dokumentasi)
+- Membangun struktur penyimpanan metrik pada **InfluxDB 2.x** di bawah organisasi `kampus` dan *bucket* `iot`, lengkap dengan pengaturan token otorisasi API.
+- Menyusun tampilan pemantauan *real-time* di **Grafana** bertajuk *monitoring IoT kelompok 3* (memuat grafik deret waktu dan indikator *gauge* suhu-kelembapan), lalu mengekspor konfigurasinya ke `dashboard/grafana_kel3.json`.
+- Mengambil tangkapan layar dashboard yang telah menerima aliran data aktual untuk disimpan pada `docs/tahap4_grafana_dashboard.png`.
+- Merapikan struktur repositori, melengkapi panduan instalasi serta tabel verifikasi pada `README.md`, dan mencatat riwayat pembaruan proyek di `CHANGELOG.md`.
