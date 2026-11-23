@@ -350,7 +350,7 @@
         "1d"
       ],
       "fiscalYearStartMonth": 0,
-      "from": "now-7d",
+      "from": "now-5m",
       "hideTimepicker": false,
       "timezone": "browser",
       "to": "now"
