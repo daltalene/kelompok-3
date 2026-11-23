@@ -9,17 +9,6 @@
 | Arkan Abdurrahman | 125103038 | Peran D - Data dan Dashboard (Tahap 4) |
 
 ## Arsitektur
-# Kelompok 3 - Pemantau Suhu dan Kelembapan
-
-## Anggota dan peran
-| Nama | NIM | Peran |
-| :--- | :--- | :--- |
-| Arkan Abdurrahman | 125103038 | Peran A - Network dan RPI (Tahap 1 / Koordinator) |
-| Adzkia Zafira Sahlah | 125103049 | Peran B - Sensor dan Firmware (Tahap 2) |
-| Clarissa Daltalena Vaniswa | 125103037 | Peran C - Platform dan Akses Internet (Tahap 3a & 3b) |
-| Jhon Calvin Titirloloby | 125103086 | Peran D - Data dan Dashboard (Tahap 4) |
-
-## Arsitektur
 ```text
 ┌───────────────────┐     WiFi 2,4 GHz      ┌───────────────────────────────────────────────────────────────┐
 │   ESP32 + DHT22   │ ────────────────────> │                  Raspberry Pi (rpi-kel3)                    │
