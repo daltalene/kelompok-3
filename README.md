@@ -42,7 +42,7 @@ Sensor DHT22 pada mikrokontroler ESP32 membaca suhu dan kelembapan udara setiap 
 ## Akses publik
 * **Alamat dashboard:** [https://headcount-engaged-pushup.ngrok-free.dev]
 * **Jalur tunnel yang dipakai:** ngrok (`ngrok http --domain=headcount-engaged-pushup.ngrok-free.dev 3000` dijalankan sebagai layanan `systemd`)
-* **Video demo (3–5 menit):** `[https://drive.google.com/file/d/1dwKEUjeL8xoA_PZl0YsJ9Z7pPbGbe-3t/view?usp=drivesdk]`
+* **Video demo (3–5 menit):** [https://drive.google.com/file/d/1dwKEUjeL8xoA_PZl0YsJ9Z7pPbGbe-3t/view?usp=drivesdk]
 
 ## Kendala dan solusi
 | Gejala | Penyebab | Perbaikan |
