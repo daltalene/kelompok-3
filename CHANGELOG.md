@@ -1,7 +1,11 @@
-# Changelog - Kelompok 3 (Pemantau Suhu dan Kelembapan)
+# Changelog - Kelompok 3 
+Catatan ini merekam setiap pengerjaan, penyesuaian teknis, verifikasi lintas anggota, serta penyempurnaan repositori proyek **Sistem Pemantau Suhu dan Kelembapan Udara Berbasis IoT** yang dikembangkan oleh **Kelompok 3**.
 
-Seluruh riwayat pengembangan, pengujian bertahap, serta perbaikan konfigurasi sistem pemantauan suhu dan kelembapan berbasis ESP32, MQTT, InfluxDB, dan Grafana dicatat dalam dokumen ini.
+## 23 November 2026 — Audit Silang Tim & Penyelesaian Akhir Repositori Oleh Seluruh Anggota
+* **Verifikasi Silang Antaranggota (Cross-Audit):** Setiap anggota Kelompok 3 (**Adzkia Zafira Sahlah**, **Clarissa Daltalena Vaniswa**, **Jhon Calvin Titirloloby**, dan **Arkan Abdurrahman**) melakukan uji coba ulang secara bergantian terhadap dokumentasi serta konfigurasi tahap milik rekan satu tim, untuk memastikan seluruh instruksi reproduksi di `README.md` dapat berjalan tanpa kendala dari awal hingga akhir.
+* **Sterilisasi Kredensial:** Mengganti seluruh informasi sensitif (SSID/kata sandi WiFi, kredensial MQTT, dan token API InfluxDB) dengan variabel pengganti (`ISI_SSID_WIFI`, `ISI_PASSWORD_WIFI`, `ISI_PASSWORD_MQTT`, `ISI_TOKEN_INFLUXDB`) sebelum publikasi repositori, melengkapi bukti tiap tahap ke dalam folder docs/, serta finalisasi README.md, CHANGELOG.md, dan kontribusi.md.
 
+---
 ## Peran B - 23 November 2026 — Penyelesaian Akhir & Sinkronisasi Repositori
 * **Penyelarasan Firmware (`firmware/dht22_mqtt.ino`):** Menyeragamkan interval pembacaan sensor DHT22 (`GPIO4`) menjadi 10 detik (`10000 ms`) serta memperbarui identitas klien menjadi `ESP32_Kel3_Client` pada topik `iot/kel3/dht22`.
 * **Pembaruan Bukti Pengujian (`docs/`):** Memperbarui arsip tangkapan layar verifikasi lalu lintas broker MQTT (`mosquitto_sub -h localhost -t "iot/kel3/#" -v`) dan kelengkapan bukti pengujian setiap tahap.
