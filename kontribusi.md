@@ -10,7 +10,7 @@ Catatan ini mendokumentasikan pembagian pekerjaan, ruang lingkup konfigurasi tek
 | :--- | :--- | :--- | :--- | :--- |
 | Adzkia Zafira Sahlah | 125103049 | Peran A | Infrastruktur Server & Keamanan Jaringan | [`docs/tahap1_rpi_piconnect.png.png`](docs/tahap1_rpi_piconnect.png), [`kontribusi.md`](kontribusi.md) |
 | Clarissa Daltalena Vaniswa | 125103037 | Peran B | Perakitan Perangkat Keras & Pemrograman ESP32 | [`firmware/dht22_mqtt.ino`](firmware/DHT22_MQTT.ino), [`docs/tahap2_rangkaian_serial.png`](docs/tahap2_rangkaian_serial.png) |
-| Jhon Calvin Titirloloby | 125103086 | Peran C | Layanan Broker MQTT, Agen Data & Tunnel Publik | [`rpi/mosquitto.conf`](rpi/mosquitto.conf), [`rpi/telegraf.conf`](rpi/telegraf.conf), [`rpi/ngrok-tunnel.service`](rpi/ngrok-tunnel.service), [`docs/tahap3a_mosquitto_sub.png`](docs/tahap3a_mosquitto_sub.png), [`docs/tahap3b_akses_publik.png`](docs/tahap3b_akses_publik.png) |
+| Jhon Calvin Titirloloby | 125103086 | Peran C | Layanan Broker MQTT, Agen Data & Tunnel Publik | [`rpi/mosquitto.conf`](rpi/mosquitto.conf), [`rpi/telegraf.conf`](rpi/telegraf.conf), [`rpi/ngrok-tunnel.service`](rpi/ngrok-tunnel.service), [`docs/tahap3a_mosquitto_sub.png`](docs/tahap3a_mosquitto_sub.png), [`docs/tahap3b_akses_seluler.png`](docs/tahap3b_akses_seluler.png) |
 | Arkan Abdurrahman | 125103038 | Peran D | Penyimpanan Time-Series, Visualisasi & Dokumentasi | [`dashboard/grafana_kel3.json`](dashboard/grafana_kel3.json), [`docs/tahap4_grafana_dashboard.png`](docs/tahap4_grafana_dashboard.png), [`README.md`](README.md), [`CHANGELOG.md`](CHANGELOG.md) |
 
 ---
@@ -32,7 +32,7 @@ Catatan ini mendokumentasikan pembagian pekerjaan, ruang lingkup konfigurasi tek
 - Mengelola layanan **Eclipse Mosquitto** melalui berkas [`rpi/mosquitto.conf`](rpi/mosquitto.conf) untuk menangani pertukaran pesan MQTT lokal dengan kredensial klien `esp32`.
 - Menjalankan **Telegraf** ([`rpi/telegraf.conf`](rpi/telegraf.conf)) sebagai penghubung yang menerjemahkan muatan JSON dari broker MQTT ke dalam basis data InfluxDB.
 - Membuat unit layanan *systemd* permanen ([`rpi/ngrok-tunnel.service`](rpi/ngrok-tunnel.service)) berbasis **ngrok** dengan domain statis `headcount-engaged-pushup.ngrok-free.dev` agar antarmuka Grafana lokal (`port 3000`) dapat diakses dari internet.
-- Mengarsipkan tangkapan layar verifikasi lalu lintas topik MQTT ([`docs/tahap3a_mosquitto_sub.png`](docs/tahap3a_mosquitto_sub.png)) dan pengujian akses luar jaringan ([`docs/tahap3b_akses_publik.png`](docs/tahap3b_akses_publik.png)).
+- Mengarsipkan tangkapan layar verifikasi lalu lintas topik MQTT ([`docs/tahap3a_mosquitto_sub.png`](docs/tahap3a_mosquitto_sub.png)) dan pengujian akses luar jaringan ([`docs/tahap3b_akses_seluler.png`](docs/tahap3b_akses_seluler.png)).
 
 ### 4. Peran D — Arkan Abdurrahman (Penyimpanan Time-Series, Visualisasi & Dokumentasi)
 - Membangun struktur penyimpanan metrik pada **InfluxDB 2.x** di bawah organisasi `kampus` dan *bucket* `iot`, lengkap dengan pengaturan token otorisasi API.
