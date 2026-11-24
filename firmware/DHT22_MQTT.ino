@@ -10,8 +10,8 @@ const char* ssid        = "paramadina_cikarang";
 const char* password    = "isi_pass";
 const char* mqtt_server = "192.168.10.90";
 const int   mqtt_port   = 1883;
-const char* mqtt_user   = "isi_pass";
-const char* mqtt_pass   = "Aacj123";
+const char* mqtt_user   = "isi_usn";
+const char* mqtt_pass   = "isi_pass";
 const char* mqtt_topic  = "iot/kel3/dht22";
 
 DHT dht(DHTPIN, DHTTYPE);
