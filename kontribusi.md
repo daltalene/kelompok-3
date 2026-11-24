@@ -8,8 +8,8 @@ Catatan ini mendokumentasikan pembagian pekerjaan, ruang lingkup konfigurasi tek
 
 | Nama | NIM | Peran | Fokus Tahap | Artefak & Direktori yang Dikelola |
 | :--- | :--- | :--- | :--- | :--- |
-| Adzkia Zafira Sahlah | 125103049 | Peran A | Infrastruktur Server & Keamanan Jaringan | [`docs/tahap1_piconnect_ufw.png`](docs/tahap1_piconnect_ufw.png), [`kontribusi.md`](kontribusi.md) |
-| Clarissa Daltalena Vaniswa | 125103037 | Peran B | Perakitan Perangkat Keras & Pemrograman ESP32 | [`firmware/dht22_mqtt.ino`](firmware/dht22_mqtt.ino), [`docs/tahap2_rangkaian_serial.png`](docs/tahap2_rangkaian_serial.png) |
+| Adzkia Zafira Sahlah | 125103049 | Peran A | Infrastruktur Server & Keamanan Jaringan | [`docs/tahap1_rpi_piconnect.png.png`](docs/tahap1_rpi_piconnect.png), [`kontribusi.md`](kontribusi.md) |
+| Clarissa Daltalena Vaniswa | 125103037 | Peran B | Perakitan Perangkat Keras & Pemrograman ESP32 | [`firmware/dht22_mqtt.ino`](firmware/DHT22_MQTT.ino), [`docs/tahap2_rangkaian_serial.png`](docs/tahap2_rangkaian_serial.png) |
 | Jhon Calvin Titirloloby | 125103086 | Peran C | Layanan Broker MQTT, Agen Data & Tunnel Publik | [`rpi/mosquitto.conf`](rpi/mosquitto.conf), [`rpi/telegraf.conf`](rpi/telegraf.conf), [`rpi/ngrok-tunnel.service`](rpi/ngrok-tunnel.service), [`docs/tahap3a_mosquitto_sub.png`](docs/tahap3a_mosquitto_sub.png), [`docs/tahap3b_akses_publik.png`](docs/tahap3b_akses_publik.png) |
 | Arkan Abdurrahman | 125103038 | Peran D | Penyimpanan Time-Series, Visualisasi & Dokumentasi | [`dashboard/grafana_kel3.json`](dashboard/grafana_kel3.json), [`docs/tahap4_grafana_dashboard.png`](docs/tahap4_grafana_dashboard.png), [`README.md`](README.md), [`CHANGELOG.md`](CHANGELOG.md) |
 
@@ -21,11 +21,11 @@ Catatan ini mendokumentasikan pembagian pekerjaan, ruang lingkup konfigurasi tek
 - Menyiapkan sistem operasi **Raspberry Pi OS (64-bit)** sebagai server lokal dengan identitas *hostname* `rpi-kel3` dan user `team_3` pada alamat IP `192.168.10.90`.
 - Mengaktifkan akses kendali jarak jauh melalui **Raspberry Pi Connect** serta autentikasi kunci SSH guna mempermudah pemeliharaan perangkat tanpa monitor eksternal.
 - Menerapkan penyaringan lalu lintas jaringan menggunakan **UFW (*Uncomplicated Firewall*)** untuk membuka port layanan `22/tcp`, `1883/tcp`, dan `3000/tcp`.
-- Mendokumentasikan hasil aktivasi akses jarak jauh dan aturan *firewall* ke dalam [`docs/tahap1_piconnect_ufw.png`](docs/tahap1_piconnect_ufw.png) serta menyusun catatan kontribusi tim pada [`kontribusi.md`](kontribusi.md).
+- Mendokumentasikan hasil aktivasi akses jarak jauh dan aturan *firewall* ke dalam [`docs/tahap1_piconnect_ufw.png`](docs/tahap1_rpi_piconnect.png.png) serta menyusun catatan kontribusi tim pada [`kontribusi.md`](kontribusi.md).
 
 ### 2. Peran B — Clarissa Daltalena Vaniswa (Perakitan Perangkat Keras & Pemrograman ESP32)
 - Menghubungkan modul sensor **DHT22** pada papan mikrokontroler **ESP32 DevKit** menggunakan jalur daya `3V3`, pin sinyal digital `D4` (`GPIO4`), dan referensi `GND`.
-- Menulis logika program [`firmware/dht22_mqtt.ino`](firmware/dht22_mqtt.ino) yang mengatur siklus pembacaan suhu dan kelembapan setiap 10 detik, menyalakan indikator LED internal (`GPIO2`) saat koneksi stabil, serta mengirimkan data berformat JSON ke topik `iot/kel3/dht22`.
+- Menulis logika program [`firmware/dht22_mqtt.ino`](firmware/DHT22_MQTT.ino) yang mengatur siklus pembacaan suhu dan kelembapan setiap 10 detik, menyalakan indikator LED internal (`GPIO2`) saat koneksi stabil, serta mengirimkan data berformat JSON ke topik `iot/kel3/dht22`.
 - Memvalidasi keluaran pembacaan sensor pada *Serial Monitor* (baud rate `115200`) dan menyimpan bukti pengujian perangkat keras pada [`docs/tahap2_rangkaian_serial.png`](docs/tahap2_rangkaian_serial.png).
 
 ### 3. Peran C — Jhon Calvin Titirloloby (Layanan Broker MQTT, Agen Data & Tunnel Publik)
