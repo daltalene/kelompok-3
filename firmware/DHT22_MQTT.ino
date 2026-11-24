@@ -69,5 +69,5 @@ void loop() {
     client.publish(mqtt_topic, payload.c_str());
   }
 
-  delay(5000); // Kirim data setiap 5 detik
+  delay(10000); // Kirim data setiap 10 detik
 }
