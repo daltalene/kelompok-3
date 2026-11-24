@@ -33,11 +33,11 @@ Sensor DHT22 pada mikrokontroler ESP32 membaca suhu dan kelembapan udara setiap 
 ## Hasil uji per tahap
 | Tahap | Bukti | Tanggal |
 | :--- | :--- | :--- |
-| Tahap 1 - RPI ke Internet | `docs/tahap1_rpi_piconnect.png` (Sesi Pi Connect aktif, `ip a`, `ufw status` aktif, dan `ping 1.1.1.1` berhasil) | 12 Nov 2026 |
-| Tahap 2 - Sensor ke RPI | `docs/tahap2_rangkaian_serial.png` (Foto rangkaian ESP32+DHT22 & Serial Monitor pembacaan tiap 10 detik tanpa `nan`) | 17 Nov 2026 |
-| Tahap 3a - Broker MQTT | `docs/tahap3a_mosquitto_sub.png` (Tangkapan layar `mosquitto_sub -t 'iot/#'` menerima JSON terautentikasi dari ESP32) | 17 Nov 2026 |
-| Tahap 4 - Basisdata dan dashboard | `docs/tahap4_grafana_dashboard.png` (Data tersimpan di bucket `iot` pasca-reboot, grafik, gauge, & alert suhu aktif) | 19 Nov 2026 |
-| Tahap 3b - Akses Internet | `docs/tahap3b_akses_seluler.png` (Tangkapan layar akses alamat publik ngrok dari jaringan data seluler & wajib login) | 20 Nov 2026 |
+| Tahap 1 - RPI ke Internet | ([`docs/tahap1_rpi_piconnect.png`](docs/tahap1_rpi_piconnect.png)) (Sesi Pi Connect aktif, `ip a`, `ufw status` aktif, dan `ping 1.1.1.1` berhasil) | 12 Nov 2026 |
+| Tahap 2 - Sensor ke RPI | ([`docs/tahap2_rangkaian_serial.png`](docs/tahap2_rangkaian_serial.png)) (Foto rangkaian ESP32+DHT22 & Serial Monitor pembacaan tiap 10 detik tanpa `nan`) | 17 Nov 2026 |
+| Tahap 3a - Broker MQTT | ([`docs/tahap3a_mosquitto_sub.png`](docs/tahap3a_mosquitto_sub.png)) (Tangkapan layar `mosquitto_sub -t 'iot/#'` menerima JSON terautentikasi dari ESP32) | 17 Nov 2026 |
+| Tahap 4 - Basisdata dan dashboard | ([`docs/tahap4_grafana_dashboard.png`](docs/tahap4_grafana_dashboard.png)) (Data tersimpan di bucket `iot` pasca-reboot, grafik, gauge, & alert suhu aktif) | 19 Nov 2026 |
+| Tahap 3b - Akses Internet | ([`docs/tahap3b_akses_seluler.png`](docs/tahap3b_akses_seluler.png)) (Tangkapan layar akses alamat publik ngrok dari jaringan data seluler & wajib login) | 20 Nov 2026 |
 
 ## Akses publik
 * **Alamat dashboard:** [https://headcount-engaged-pushup.ngrok-free.dev]
@@ -120,5 +120,5 @@ Sensor DHT22 pada mikrokontroler ESP32 membaca suhu dan kelembapan udara setiap 
    ```
    
 6. **Program mikrokontroler ESP32 DevKit untuk membaca sensor DHT22:**
-   * Buka berkas firmware/dht22_mqtt.ino di Arduino IDE (pastikan pustaka DHT sensor library dan PubSubClient sudah terpasang).
+   * Buka berkas ([`firmware/DHT22_MQTT.ino`](firmware/DHT22_MQTT.ino)) di Arduino IDE (pastikan pustaka DHT sensor library dan PubSubClient sudah terpasang).
    * Sesuaikan nilai ISI_SSID_WIFI, ISI_PASSWORD_WIFI, serta ISI_PASSWORD_MQTT, pilih papan DOIT ESP32 DEVKIT V1, lalu tekan tombol Upload.
